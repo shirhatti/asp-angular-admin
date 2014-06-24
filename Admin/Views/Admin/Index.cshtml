@@ -1,0 +1,62 @@
+﻿@using Microsoft.AspNet.Identity
+@if(Request.IsAuthenticated){
+
+<!DOCTYPE html>
+<html lang="en" ng-app="main">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Bootstrap 3 Admin Example</title>
+    <meta name="generator" content="Bootply" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/footer.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="wrap">
+        <!-- Header -->
+        <div id="top-nav" class="navbar navbar-inverse navbar-static-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">ASP.NET Application Admin Panel</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">Hi,  @User.Identity.GetUserName() <span class="caret"></span></a>
+                            <ul id="g-account-menu" class="dropdown-menu" role="menu">
+                                <li><a href="~/Admin"><i class="glyphicon glyphicon-cog"></i> Admin Panel</a></li>
+                                <li><a href="#"><i class="glyphicon glyphicon-user"></i> My Profile</a></li>
+                                <li><a href="#"><i class="glyphicon glyphicon-lock"></i> Logout</a></li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                </div>
+            </div><!-- /container -->
+        </div>
+        <!-- /Header -->
+        <!-- Main -->
+        <div class="container" ng-include src="'/admin/table'">
+        </div>
+        <!-- Added to implement sticky footer -->
+        <div id="push"></div>
+    </div>
+    
+
+    <footer class="text-center">&copy; Microsoft @DateTime.Now.Year </footer>
+
+    <!-- script references -->
+    <script src="~/Scripts/angular.min.js"></script>
+    <script src="~/Scripts/ui-bootstrap.min.js"></script>
+    <script src="~/Scripts/ng-table.js"></script>
+    <script src="~/Scripts/app.js"></script>
+</body>
+</html>
+}

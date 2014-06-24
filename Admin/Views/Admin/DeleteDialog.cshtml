@@ -1,0 +1,21 @@
+﻿<div class="modal-header">
+    <h3 class="modal-title">Delete User</h3>
+</div>
+<div class="modal-body">
+    <label for="id">ID</label>
+    <input type="text" class="form-control" id="id" ng-model="user.id" disabled="disabled" />
+    <br />
+    <label for="firstName">First Name</label>
+    <input type="text" class="form-control" id="firstName" ng-model="user.first_name" disabled="disabled" />
+    <br />
+    <label for="lastName">Last Name</label>
+    <input type="text" class="form-control" id="lastName" ng-model="user.last_name" disabled="disabled" />
+    <br />
+    <label for="email">Email</label>
+    <input type="email" class="form-control" id="email" ng-model="user.email" disabled="disabled" />
+</div>
+<div class="modal-footer">
+    <button class="btn btn-danger" ng-click="delete_ok()">Delete</button>
+    <button class="btn btn-primary" ng-click="cancel()">Cancel</button>
+    
+</div>

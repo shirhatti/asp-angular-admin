@@ -1,0 +1,66 @@
+﻿<div class="modal-header">
+    <h2><div type="button" class="btn btn-danger pull-right glyphicon glyphicon-remove-circle" ng-click="cancel()"></div></h2>
+    <h2 ng-show="mode=='edit'">{{user.first_name}}&nbsp;{{user.last_name}}</h2>
+    <h2 ng-show="mode=='new'">Create New User</h2>
+    
+</div>
+<div class="modal-body">
+    <div ng-repeat="alert in alerts">
+        <br />
+        <alert type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Profile Information</h3>
+        </div>
+        <div class="panel-body">
+            <form name="profileData" role="form" ng-submit="submit(profileData.$valid)" novalidate>
+                <div class="form-group">
+                    <label for="id">ID</label>
+                    <input type="text" class="form-control" id="id" ng-model="user.id" disabled="disabled">
+                    <br />
+                    <label for="firstName">First Name</label>
+                    <input type="text" class="form-control" name="firstName" ng-model="user.first_name" placeholder="Enter First Name" ng-minlength="2" ng-maxlength="20">
+                    <p class="text-danger" ng-show="profileData.firstName.$error.minlength" class="help-block">First name is too short.</p>
+                    <p class="text-danger" ng-show="profileData.firstName.$error.maxlength" class="help-block">First name is too long.</p>
+                    <br />
+                    <label for="lastName">Last Name</label>
+                    <input type="text" class="form-control" name="lastName" ng-model="user.last_name" placeholder="Enter Last Name" ng-minlength="2" ng-maxlength="20">
+                    <p class="text-danger" ng-show="profileData.lastName.$error.minlength" class="help-block">Last name is too short.</p>
+                    <p class="text-danger" ng-show="profileData.lastName.$error.maxlength" class="help-block">Last name is too long.</p>
+                    <br />
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" name="email" ng-model="user.email" placeholder="Enter Email" ng-disabled="false">
+                    <p class="text-danger" ng-show="profileData.email.$invalid && !profileData.email.$pristine" class="help-block">Enter a valid email.</p>
+                    <br />
+                    <label>Email Confirmed</label>
+                    <br />
+                    <div class="btn-group">
+                        <label class="btn btn-default" ng-model="user.email_confirmed" btn-radio="false">Not Confirmed</label>
+                        <label class="btn btn-default" ng-model="user.email_confirmed" btn-radio="true">Confirmed</label>
+                    </div>
+                    <br />
+                    <br />
+                    <label>Locked Out</label>
+                    <br />
+                    <div class="btn-group">
+                        <label class="btn btn-default" ng-model="user.locked" btn-radio="false">Account Active</label>
+                        <label class="btn btn-default" ng-model="user.locked" btn-radio="true">Account Locked</label>
+                    </div>
+                    <br />
+                    <br />
+                    <hr />
+                    <button type="submit" class="btn btn-info pull-right" class="btn btn-default">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="panel panel-default" ng-show="mode=='edit'">
+        <div class="panel-heading">
+            <h3 class="panel-title">Administrative Tasks</h3>
+        </div>
+        <div class="panel-body">
+            <button type="button" class="btn btn-warning" ng-click="resetPassword()">Reset Password</button>
+        </div>
+    </div>
+</div>
