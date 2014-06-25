@@ -1,11 +1,10 @@
-var app = angular.module('main', ['ngTable','ui.bootstrap']).
-    controller('DemoCtrl', function ($scope, $filter, ngTableParams, $http, $modal) {
-
-        $scope.alerts = [
-        ];
+(function () {
+    var app = angular.module('main', [, 'ui.bootstrap']).
+    controller('AdminCtrl', function ($scope, $filter, $http, $modal) {
 
         //Initialize variables
-        var data = [];
+        $scope.alerts = [];
+        $scope.data = [];
         $scope.editId = -1;
         $scope.hoverId = -1;
         $scope.temp_user = {};
@@ -14,32 +13,14 @@ var app = angular.module('main', ['ngTable','ui.bootstrap']).
         $scope.loadData = function () {
             $http.get('../api/users', {
                 params: { time: Date.now() }
-            }).success(function (data_response, status) {
-                data = data_response;
-                $scope.data = data_response;
-                $scope.tableParams.reload();
+            }).success(function (data, status) {
+                $scope.data = data;
             })
         };
-        
-        $scope.tableParams = new ngTableParams({
-            page: 1,
-            count: 10,
-            sorting: {
-                id:'asc'
-            }
-        },{
-            total: data.length,
-            getData: function ($defer, params) {
-                var filteredData = params.filter() ? $filter('filter')(data, params.filter()) : data;
-                var orderedData = params.sorting() ? $filter('orderBy')(filteredData, params.orderBy()) : data;
-                this.total = orderedData.length;
-                $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-            }
-        });
 
-        $scope.loadData(); 
+        $scope.loadData();
 
-        $scope.setHoverId =  function(pid) {
+        $scope.setHoverId = function (pid) {
             $scope.hoverId = pid;
         };
 
@@ -74,12 +55,11 @@ var app = angular.module('main', ['ngTable','ui.bootstrap']).
                     modalInstance.result.then(function (message) {
                         //Close Function
                         $scope.addAlert("success", "Profile information successfully updated");
-                        for (var i = 0; i < data.length; i++) {
-                            if (data[i].id == id) {
-                                data[i] = angular.copy(message);
+                        for (var i = 0; i < $scope.data.length; i++) {
+                            if ($scope.data[i].id == id) {
+                                $scope.data[i] = angular.copy(message);
                             }
                         }
-                        $scope.tableParams.reload();
                     }, function (message) {
                         //Cancel Function (or Esc keypress)
                     });
@@ -109,13 +89,15 @@ var app = angular.module('main', ['ngTable','ui.bootstrap']).
                 });
 
             }
-            
+
         }
 
         $scope.deleteItem = function (mode, id) {
-            for (var i = 0; i < data.length; i++) {
-                if (data[i].id == id) {
-                    $scope.temp_user = angular.copy(data[i]);
+            var array_index = 0;
+            for (var i = 0; i < $scope.data.length; i++) {
+                if ($scope.data[i].id == id) {
+                    array_index = i;
+                    $scope.temp_user = angular.copy($scope.data[i]);
                     break;
                 }
             }
@@ -137,12 +119,11 @@ var app = angular.module('main', ['ngTable','ui.bootstrap']).
                 $http.delete('/api/users/' + $scope.temp_user.id)
                 .success(function (data, response) {
                     $scope.addAlert("success", "Profile successfully deleted");
-                    for (var i = 0; i < data.length; i++) {
-                        if (data[i].id == id) {
-                            data.splice(i);
+                    for (var i = 0; i < $scope.data.length; i++) {
+                        if ($scope.data[i].id == id) {
+                            $scope.data.splice(i, 1);
                         }
                     }
-                    $scope.tableParams.reload();
                 }).error(function (data, response) {
                     $scope.addAlert("danger", "Uh-oh! Something went wrong. Please try again");
                 });
@@ -152,59 +133,59 @@ var app = angular.module('main', ['ngTable','ui.bootstrap']).
         };
 
     });
+    var ModalInstanceCtrl = function ($scope, $modalInstance, $http, user, mode) {
+        $scope.mode = mode;
+        $scope.user = user;
+        $scope.created = false;
+        $scope.delete_ok = function () {
+            $modalInstance.close('delete');
+        };
 
-var ModalInstanceCtrl = function ($scope, $modalInstance, $http, user, mode) {
-    $scope.mode = mode;
-    $scope.user = user;
-    $scope.created = false;
-    $scope.delete_ok = function () {
-        $modalInstance.close('delete');
-    };
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
 
-    $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
-    };
+        $scope.alerts = [];
+        $scope.addAlert = function (type, message) {
+            $scope.alerts.push({ 'type': type, 'msg': message });
+        };
 
-    $scope.alerts = [];
-    $scope.addAlert = function (type, message) {
-        $scope.alerts.push({ 'type': type, 'msg': message });
-    };
+        $scope.closeAlert = function (index) {
+            $scope.alerts.splice(index, 1);
+        };
 
-    $scope.closeAlert = function (index) {
-        $scope.alerts.splice(index, 1);
-    };
-
-    $scope.resetPassword = function () {
-        $http.post('/api/Users/' + $scope.user.id + '/ResetPassword')
-        .success(function (data, status) {
-            $scope.addAlert("success", "An email to to reset password has been sent to " + $scope.user.email);
-        }).error(function (data, status) {
-            $scope.addAlert("danger", "Uh-oh! Something went wrong. Please try again");
-        });
-    }
-
-    $scope.submit = function (isValid) {
-        if (mode == 'edit') {
-            $http.put('/api/users/' + $scope.user.id, $scope.user)
+        $scope.resetPassword = function () {
+            $http.post('/api/Users/' + $scope.user.id + '/ResetPassword')
             .success(function (data, status) {
-                $scope.user = data;
-                //TODO Disable button during request to prevent double posting
-                $modalInstance.close($scope.user);
+                $scope.addAlert("success", "An email to to reset password has been sent to " + $scope.user.email);
             }).error(function (data, status) {
                 $scope.addAlert("danger", "Uh-oh! Something went wrong. Please try again");
             });
         }
-        if (mode == 'new') {
-            alert($scope.user.email);
-            $http.post('../api/users', $scope.user)
-            .success(function (data, response) {
-                $scope.user = data;
-                //TODO Disable button during request to prevent double posting
-                $scope.created = true;
-                $modalInstance.close($scope.user);
-            }).error(function (data, status) {
-                $scope.addAlert("danger", "Uh-oh! Something went wrong. Please try again");
-            });
+
+        $scope.submit = function (isValid) {
+            if (mode == 'edit') {
+                $http.put('/api/users/' + $scope.user.id, $scope.user)
+                .success(function (data, status) {
+                    $scope.user = data;
+                    //TODO Disable button during request to prevent double posting
+                    $modalInstance.close($scope.user);
+                }).error(function (data, status) {
+                    $scope.addAlert("danger", "Uh-oh! Something went wrong. Please try again");
+                });
+            }
+            if (mode == 'new') {
+                $http.post('../api/users', $scope.user)
+                .success(function (data, response) {
+                    $scope.user = data;
+                    $scope.data.push($scoper.user);
+                    //TODO Disable button during request to prevent double posting
+                    $scope.created = true;
+                    $modalInstance.close($scope.user);
+                }).error(function (data, status) {
+                    $scope.addAlert("danger", "Uh-oh! Something went wrong. Please try again");
+                });
+            }
         }
-    }
-};
+    };
+})();

@@ -82,7 +82,7 @@ namespace Admin.Controllers
             user.FirstName = value.first_name;
             user.LastName = value.last_name;
             user.Email = value.email;
-            var result = UserManager.Create(user, Faker.StringFaker.AlphaNumeric(10));
+            var result = UserManager.Create(user, Faker.StringFaker.Alpha(5).ToUpper() + Faker.StringFaker.Alpha(5) + Faker.StringFaker.Numeric(5) + Faker.StringFaker.SelectFrom(3, "!@#$%^&*()"));
 
             if (result.Succeeded)
             {
@@ -100,7 +100,7 @@ namespace Admin.Controllers
             }
         }
         [HttpPost]
-        // GET: api/Users/5/ResetPassword
+        // POST: api/Users/5/ResetPassword
         public async Task ResetPassword(string id)
         {
             ApplicationUser user = await UserManager.FindByIdAsync(id);

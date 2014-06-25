@@ -1,90 +1,56 @@
-﻿<div class="row" ng-controller="DemoCtrl">
+﻿<div class="row" ng-controller="AdminCtrl">
     <div class="col-md-12">
         <h2>Manage Users </h2>
-        <button type="button" class="btn btn-default" ng-click="openEditModal($index, 'new', -1)">Create New User</button>
         <hr>
         <div ng-repeat="alert in alerts">
             <br />
             <alert type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
-        </div>
-        <pre>
-            The selected page no: {{currentPage}}
-            dataLength = {{data.length}}
-            (10*currentPage) - data.length = {{(10*(currentPage-1)) - data.length}}
-            <pagination direction-links="false" total-items="data.length" ng-model="currentPage" num-pages="smallnumPages"></pagination>
-            <button type="button" class="btn btn-default" ng-click="openEditModal($index, 'new', -1)">Create New User</button>
-        </pre>
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th style="width: 10%;">ID</th>
-                    <th style="width: 25%;">First Name</th>
-                    <th style="width: 25%;">Last Name</th>
-                    <th>Email Address</th>
-                    <th style="width: 100px;">Actions</th>
-                </tr>
-            </thead>
-            <tbody ng-repeat="user in data | limitTo: (10*(currentPage-1)) - data.length | limitTo: 10">
-                <tr ng-mouseenter="setHoverId(user.id)" ng-mouseleave="setHoverId(-1)">
-                    <td>
-                        {{user.id | limitTo:5}}
-                    </td>
-                    <td>
-                        {{user.first_name}}
-                    </td>
-                    <td>
-                        {{user.last_name}}
-                    </td>
-                    <td>
-                        {{user.email}}
-                    </td>
-                    <td data-title="'Actions'">
-                        <div ng-show="hoverId === user.id>
-                            <button type="button" class="btn" ng-click="openEditModal($index, 'edit', user.id)" style="vertical-align: middle;">
-                                <span class="glyphicon glyphicon-edit"></span>
-                            </button>
-                            <button type="button" class="btn" ng-click="deleteItem('delete', user.id)" style="vertical-align: middle;">
-                                <span class="glyphicon glyphicon-trash"></span>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        </div>        
         <div class="row">
-            <table ng-table="tableParams" show-filter="true" class="table table-hover">
-                @*<thead>
-                        <th><h3>ID</h3></th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">ID</th>
+                        <th style="width: 25%;">First Name</th>
+                        <th style="width: 25%;">Last Name</th>
                         <th>Email Address</th>
-                        <th style="width: 100px;"><button type="button" class="btn btn-default" ng-click="openEditModal($index, 'new', -1)">Create New User</button></th>
-                    </thead>*@
-                <tbody ng-repeat="p in $data">
-                    <tr ng-mouseleave="setHoverId(-1)" style="height: 55px;">
-                        <td data-title="'ID'" filter="{ 'id': 'text' }" sortable="'id'" style="vertical-align: middle;">
-                            {{p.id | limitTo:5}}...
+                        <th style="width: 100px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody ng-repeat="user in data | filter:filterText | limitTo: (10*(currentPage-1)) - data.length | limitTo: 10">
+                    <tr ng-mouseenter="setHoverId(user.id)" ng-mouseleave="setHoverId(-1)" style="height: 55px">
+                        <td>
+                            {{user.id | limitTo:5}}
                         </td>
-                        <td data-title="'First Name'" filter="{ 'first_name': 'text' }" sortable="'first_name'" style="vertical-align: middle;">
-                            {{p.first_name}}
+                        <td>
+                            {{user.first_name}}
                         </td>
-                        <td data-title="'Last Name'" filter="{ 'last_name': 'text' }" sortable="'last_name'" style="vertical-align: middle;">
-                            {{p.last_name}}
+                        <td>
+                            {{user.last_name}}
                         </td>
-                        <td data-title="'Email'" filter="{ 'email': 'text' }" sortable="'email'" style="vertical-align: middle;">
-                            {{p.email}}
+                        <td>
+                            {{user.email}}
                         </td>
-                        <td data-title="'Actions'" style="width: 100px;">
-                            <div type="button" class="btn" ng-show="hoverId===p.id" ng-click="openEditModal($index, 'edit', p.id)" style="vertical-align: middle;">
+                        <td data-title="'Actions'">
+                            <div ng-show="hoverId === user.id">
+                            <button type=" button" class="btn btn-primary" ng-click="openEditModal($index, 'edit', user.id)" style="vertical-align: middle;">
                                 <span class="glyphicon glyphicon-edit"></span>
-                            </div>
-                            <div type="button" class="btn" ng-show="hoverId===p.id" ng-click="deleteItem('delete', p.id)" style="vertical-align: middle;">
-                                <span class="glyphicon glyphicon-trash"></span>
+                                </button>
+                                <button type="button" class="btn btn-danger" ng-click="deleteItem('delete', user.id)" style="vertical-align: middle;">
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </button>
                             </div>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
+        <pre>
+            data.length = {{data.length}}
+            filter = {{filterText}}
+            <input class="input-sm type="text" ng-model="filterText"><span class="glyphicon glyphicon-search "></span></input>
+            <pagination direction-links="false" total-items="data.length" ng-model="currentPage" num-pages="smallnumPages"></pagination>
+            <button type="button" class="btn btn-default" ng-click="openEditModal($index, 'new', -1)">Create New User</button>
+        </pre>
     </div>
 </div>

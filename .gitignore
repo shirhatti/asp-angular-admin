@@ -7,6 +7,9 @@
 *.sln.docstates
 Admin/PrivateSettings.config
 
+# NuGet Packages
+Packages/*
+
 # Build results
 
 [Dd]ebug/
