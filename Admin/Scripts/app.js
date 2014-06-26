@@ -1,6 +1,8 @@
 (function () {
-    var app = angular.module('main', [, 'ui.bootstrap']).
-    controller('AdminCtrl', function ($scope, $filter, $http, $modal) {
+    var app = angular.module('main', [, 'ui.bootstrap'])
+    .controller('NavCtrl', function ($scope, $http) {
+    })
+    .controller('AdminCtrl', function ($scope, $filter, $http, $modal) {
 
         //Initialize variables
         $scope.alerts = [];
@@ -9,21 +11,28 @@
         $scope.hoverId = -1;
         $scope.temp_user = {};
         $scope.index = -1;
-
+        $scope.filteredData = [];
+        // Load the data initially
         $scope.loadData = function () {
             $http.get('../api/users', {
                 params: { time: Date.now() }
             }).success(function (data, status) {
                 $scope.data = data;
+                $scope.filteredData = data;
             })
         };
-
         $scope.loadData();
+
 
         $scope.setHoverId = function (pid) {
             $scope.hoverId = pid;
         };
 
+        $scope.$watch("filterText", function (query) {
+            $scope.filteredData = $filter("filter")($scope.data, query);
+        });
+
+        // Methods to use alerts
         $scope.addAlert = function (type, message) {
             $scope.alerts.push({ 'type': type, 'msg': message });
         };
@@ -84,6 +93,7 @@
                 modalInstance.result.then(function (message) {
                     // Close Function
                     $scope.addAlert("success", "Profile information successfully updated");
+                    $scope.data.push(message)
                 }, function (message) {
                     // Cancel Function (or Esc keypress)
                 });
@@ -178,7 +188,6 @@
                 $http.post('../api/users', $scope.user)
                 .success(function (data, response) {
                     $scope.user = data;
-                    $scope.data.push($scoper.user);
                     //TODO Disable button during request to prevent double posting
                     $scope.created = true;
                     $modalInstance.close($scope.user);

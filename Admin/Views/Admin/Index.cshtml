@@ -25,15 +25,14 @@
                     </button>
                     <a class="navbar-brand" href="#">ASP.NET Application Admin Panel</a>
                 </div>
-                <div class="navbar-collapse collapse">
+                <div class="navbar-collapse collapse" ng-controller="NavCtrl">
                     <ul class="nav navbar-nav navbar-right">
 
                         <li class="dropdown">
                             <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">Hi,  @User.Identity.GetUserName() <span class="caret"></span></a>
                             <ul id="g-account-menu" class="dropdown-menu" role="menu">
                                 <li><a href="~/Admin"><i class="glyphicon glyphicon-cog"></i> Admin Panel</a></li>
-                                <li><a href="#"><i class="glyphicon glyphicon-user"></i> My Profile</a></li>
-                                <li><a href="#"><i class="glyphicon glyphicon-lock"></i> Logout</a></li>
+                                <li><a href="#" ng-click><i class="glyphicon glyphicon-lock"></i> Logout</a></li>
                             </ul>
                         </li>
 
@@ -55,7 +54,6 @@
     <!-- script references -->
     <script src="~/Scripts/angular.min.js"></script>
     <script src="~/Scripts/ui-bootstrap.min.js"></script>
-    <script src="~/Scripts/ng-table.js"></script>
     <script src="~/Scripts/app.js"></script>
 </body>
 </html>
